@@ -7,19 +7,11 @@ function extraiLinks(texto) {
     const regex = /\[([^[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)/gm;
     const capturas = [...texto.matchAll(regex)];
     const resultado = capturas.map((captura) => ({[captura[1]]:captura[2]}))
-    return resultado
+    return resultado.length ? resultado : "não há links no arquivo"
 }
 
 function trataErro(erro) {
-    if (erro.code == 'EISDIR') {
-        throw new Error(chalk.red(erro.code, 'Caminho indicado leva a um diretório não a um arquivo'));
-    }
-    else if (erro.code == "ENOENT") {
-        throw new Error(chalk.red(erro.code, 'Nome especificado não existe'));
-    }
-    else if (erro.code != null) {
-        throw new Error(chalk.red(erro.code, 'Não foi encontrado o arquivo'));
-    }
+    throw new Error(chalk.red(erro.code, 'Não foi encontrado o arquivo'));
 }
 
 // FUNÇÃO ASSÍNCRONA COM ASYNC E AWAIT
@@ -27,11 +19,13 @@ async function pegaArquivo(caminhoDoArquivo) {
     try {
         const enconding = 'utf-8';
         const texto = await fs.promises.readFile(caminhoDoArquivo, enconding);
-        console.log(extraiLinks(texto));
+        return extraiLinks(texto);
     } catch (erro) {
         trataErro(erro);
     }
 }
+
+export default pegaArquivo;
 
 // VERSÃO ASSÍNCRONA DA FUNÇÃO COM THEN E CATCH
 // function pegaArquivo(caminhoDoArquivo) {
@@ -54,5 +48,3 @@ async function pegaArquivo(caminhoDoArquivo) {
 // }
 
 // \[([^[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)
-
-pegaArquivo("./arquivos/texto.md");

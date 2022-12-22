@@ -17,6 +17,7 @@ async function checaStatus (listaURLs) {
         return arrStatus;
 }
 
+
 function manejaErros (erro) {
     if (erro.cause.code === 'ENOTFOUND') {
         return 'link não encontrado';
@@ -25,11 +26,28 @@ function manejaErros (erro) {
     }
 }
 
-export default async function listaValidada (listaDeLinks) {
+
+async function listaValidada (listaDeLinks) {
     const links = extraiLinks(listaDeLinks);
     const status = await checaStatus(links);
     return listaDeLinks.map((objeto, indice) => ({
         ...objeto,
         status: status[indice]
-    })) ;
+    }));
+}
+
+async function listaLinksQuebrados (listaDeLinks) {
+    const lista = await listaValidada(listaDeLinks);
+    let listaQuebrados = [];
+    lista.forEach(( link )=> {
+        if (link["status"] === "404 - Not Found") {
+            listaQuebrados.push(link);
+        }
+    });
+    return listaQuebrados;
+}
+
+export {
+    listaLinksQuebrados,
+    listaValidada
 }

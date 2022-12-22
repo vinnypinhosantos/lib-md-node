@@ -23,3 +23,12 @@ Esse comando vai trazer a lista com o status HTTP atualizado.
 Exemplo:
 
 `npm run cli ./arquivos/texto.md -- --valida`
+
+## Links quebrados
+- npm run cli caminho_do_arquivo -- --quebrados
+
+Esse comando vai trazer a lista apenas com os links quebrados (Status 404).
+
+Exemplo:
+
+`npm run cli ./arquivos/texto.md -- --quebrados`
